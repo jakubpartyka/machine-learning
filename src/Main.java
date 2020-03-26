@@ -1,10 +1,10 @@
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
+@SuppressWarnings("unchecked")
 public class Main {
     private static final String TRAINING_SET_FILENAME = "iris.test.data";
     private static final String DATA_SET_FILENAME = "iris.data";
@@ -33,19 +33,51 @@ public class Main {
 
     private static void analyzeData() {
         for (TrainingObject dataObject : dataSet) {
-            HashMap<TrainingObject,Double> distances = new HashMap<>();
+            LinkedHashMap<TrainingObject,Double> distances = new LinkedHashMap<>();
+            LinkedHashMap<TrainingObject,Double> decisiveObjects = new LinkedHashMap<>();
 
             //calculate distances
             for (TrainingObject trainingObject : trainingSet) {
                 distances.put(trainingObject,calculateDistance(dataObject,trainingObject));
             }
 
-            //determine data object type according to K parameter
+            //a method to sort distances descending
+            distances = sort(distances);
 
+            //get k-number of closes points
+            for (int i = 0; i < k; i++) {
+                TrainingObject key = (TrainingObject) distances.keySet().toArray()[i];
+                decisiveObjects.put(key,distances.get(key));
+            }
 
-
+            //determine object class basing on training set type occurrences
+            
         }
 
+
+    }
+
+    private static LinkedHashMap sort(LinkedHashMap<TrainingObject, Double> distances) {
+        LinkedHashMap<TrainingObject,Double> result = new LinkedHashMap<>();
+
+        //sort
+        while (!distances.isEmpty()) {
+            //get first value from distances
+            Double minimalValue = (Double) distances.values().toArray()[0];
+            TrainingObject minimalKey = (TrainingObject) distances.keySet().toArray()[0];
+
+            for (TrainingObject key : distances.keySet()) {
+                if(distances.get(key) < minimalValue) {
+                    minimalValue = distances.get(key);
+                    minimalKey = key;
+                }
+            }
+
+            result.put(minimalKey,minimalValue);
+            distances.remove(minimalKey);
+        }
+
+        return result;
     }
 
     private static Double calculateDistance(TrainingObject dataObject, TrainingObject trainingObject) {
