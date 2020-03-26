@@ -1,16 +1,17 @@
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 @SuppressWarnings("unchecked")
 public class Main {
     private static final String TRAINING_SET_FILENAME = "iris.test.data";
     private static final String DATA_SET_FILENAME = "iris.data";
-    private static int k = 4;
+    private static int k = 24;
     private static List<TrainingObject> trainingSet = new ArrayList<>();
-    private static List<TrainingObject> dataSet = new ArrayList<>();
+    private static List<AnalyzedObject> dataSet = new ArrayList<>();
 
     public static void main(String[] args) {
         System.out.println("Program start");
@@ -22,17 +23,13 @@ public class Main {
         //load actual data set
         loadSetToAnalyze();
 
+        //analyze data
         analyzeData();
-
-
-
-
-
-
     }
 
     private static void analyzeData() {
-        for (TrainingObject dataObject : dataSet) {
+        System.out.println("\n\nresults:\n\n");
+        for (AnalyzedObject dataObject : dataSet) {
             LinkedHashMap<TrainingObject,Double> distances = new LinkedHashMap<>();
             LinkedHashMap<TrainingObject,Double> decisiveObjects = new LinkedHashMap<>();
 
@@ -51,10 +48,21 @@ public class Main {
             }
 
             //determine object class basing on training set type occurrences
-            
+            LinkedHashMap<String, Integer> occurrences = new LinkedHashMap<>();
+            decisiveObjects.forEach((trainingObject, aDouble) -> {
+                if(!occurrences.containsKey(trainingObject.type)){
+                    occurrences.put(trainingObject.type,1);
+                }
+                else {
+                    occurrences.put(trainingObject.type,occurrences.get(trainingObject.type) + 1);
+                }
+            });
+
+            //set object discovered type to most common decisive class
+            dataObject.discoveredType = occurrences.keySet().toArray()[0].toString();
+
+            System.out.println(dataObject.type + " " + dataObject.discoveredType);
         }
-
-
     }
 
     private static LinkedHashMap sort(LinkedHashMap<TrainingObject, Double> distances) {
@@ -80,7 +88,7 @@ public class Main {
         return result;
     }
 
-    private static Double calculateDistance(TrainingObject dataObject, TrainingObject trainingObject) {
+    private static Double calculateDistance(AnalyzedObject dataObject, TrainingObject trainingObject) {
         Double distance;
         double A = dataObject.a, B = dataObject.b, C = dataObject.c, D = dataObject.d;
         double a = trainingObject.a, b = trainingObject.b, c = trainingObject.c, d = trainingObject.d;
@@ -121,6 +129,7 @@ public class Main {
 
                 AnalyzedObject object = new AnalyzedObject(data[0],data[1],data[2],data[3],data[4]);
                 dataSet.add(object);
+
                 line = reader.readLine();
             }
             System.out.println("data set was read successfully");
