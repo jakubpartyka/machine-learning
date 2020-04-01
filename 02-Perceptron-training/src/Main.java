@@ -3,19 +3,46 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 public class Main {
-    //file settings
+    //settings
     private static final String trainingSetPath = "perceptron.data.csv";
     private static final String dataSetPath = "perceptron.test.data.csv";
+    private static final boolean manualTrainingConstantSet = false;
+
+    private static double trainingConstant = 0.5;
 
     //lists
     private static ArrayList<dataObject> trainingSet   = new ArrayList<>();
     private static ArrayList<dataObject> dataSet       = new ArrayList<>();
 
     public static void main(String[] args) {
+        //loading data from .csv files
 	    loadTrainingSet();
         loadDataSet();
+
+        //set training constant
+        if(manualTrainingConstantSet){
+            System.out.println("input training constant value: ");
+            try {
+                trainingConstant = new Scanner(System.in).nextDouble();
+            } catch (InputMismatchException e){
+                System.out.println("wrong double entered. Use \',\'");
+            }
+        }
+        System.out.println("training constant is: " + trainingConstant);
+        
+        //train perceptron
+        trainPerceptron();
+
+
+
+
+    }
+
+    private static void trainPerceptron() {
     }
 
     private static void loadTrainingSet() {
