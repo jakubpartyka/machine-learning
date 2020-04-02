@@ -1,10 +1,9 @@
-import com.sun.org.apache.regexp.internal.RE;
-
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 class Perceptron {
-    private int [] wageVector = new int[Main.NUMBER_OF_VARIABLES];
+    private double [] wageVector = new double[Main.NUMBER_OF_VARIABLES];
     private double deviation;   //odchylenie
 
     Perceptron(double deviation) {
@@ -22,13 +21,13 @@ class Perceptron {
 
     String getWageVector(){
         StringBuilder output = new StringBuilder();
-        for (int i : wageVector) {
+        for (int i = 0; i<wageVector.length; i++) {
             output.append(String.valueOf(i)).append(" ");
         }
         return output.toString();
     }
 
-    void train(List<DataObject> trainingSet, double learningFactor, double trainingConstant, int errorMax, int maxIterations) {
+    void train(List<DataObject> trainingSet, double learningFactor, int errorMax, int maxIterations) {
         int iteration = 0;
         int errorCount = errorMax + 1;
 
@@ -41,14 +40,14 @@ class Perceptron {
                 dataObject.setDiscoveredType(Main.values.get(y).toString());
 
                 //DELTA RULE
-                applyDeltaRule(dataObject);
+                applyDeltaRule(dataObject, learningFactor, y);
             }
 
             iteration++;
         }
     }
 
-    private void applyDeltaRule(DataObject dataObject) {
+    private void applyDeltaRule(DataObject dataObject, double learningFactor, int calculatedType) {
         //this method modifies deviation and wages vector according to delta rule and data object argument.
         if(!dataObject.isTraining){
             //check if passed object is a training object
@@ -57,13 +56,29 @@ class Perceptron {
         }
 
         //quit if type was discovered correctly - no changes will be applied anyway
-        if(dataObject.getDiscoveredType().equals(dataObject.type))
+        int expectedType = dataObject.getTypeAsInt();
+        if (expectedType == calculatedType)
             return;
 
+        //if types mismatch apply delta rule
+        double [] newWageVector = Arrays.copyOf(wageVector,wageVector.length);
+        double [] objectVector  = dataObject.dataAsVector();
+        double newDeviation = deviation;
 
+        for (int i = 0; i<wageVector.length; i++) {
+            newWageVector[i] = wageVector[i] + (learningFactor * (expectedType - calculatedType) * objectVector[i]);
+            newDeviation = deviation - (learningFactor * (expectedType - calculatedType));
+        }
+
+        System.out.println("zmieniono własności perceptronu: wektor: " + Arrays.toString(wageVector)
+                + "/" + Arrays.toString(newWageVector) + " deviation: " + deviation + "/" + newDeviation + " (stare/nowe)");
+
+        //update Perceptron's vector and deviation
+        wageVector = newWageVector;
+        deviation = newDeviation;
     }
 
-    int calculateOutput(double [] inputVector){
+    private int calculateOutput(double[] inputVector){
         //check if vectors match each other
         if(inputVector.length != wageVector.length){
             System.out.println("Zły wektor");
@@ -73,7 +88,7 @@ class Perceptron {
         int net = 0;
 
         //calculate vectors' scalar product
-        for (int i : wageVector) {
+        for (int i = 0; i<wageVector.length; i++) {
             net += wageVector[i] * inputVector[i];
         }
         net -= deviation;

@@ -22,7 +22,6 @@ public class Main {
     private static final boolean manualTrainingConstantSet = false;
 
     //perceptron settings
-    private static double   trainingConstant    = 0.5;
     private static double   deviation           = 3;
     private static double   learningFactor      = 0.3;
     private static int      errorMax            = 5;
@@ -41,18 +40,18 @@ public class Main {
         if(manualTrainingConstantSet){
             System.out.println("input training constant value: ");
             try {
-                trainingConstant = new Scanner(System.in).nextDouble();
+                learningFactor = new Scanner(System.in).nextDouble();
             } catch (InputMismatchException e){
                 System.out.println("wrong double entered. Use \',\'");
             }
         }
-        System.out.println("training constant is: " + trainingConstant);
+        System.out.println("learning factor is: " + learningFactor);
 
         //create Perceptron
         Perceptron perceptron = new Perceptron(deviation);
         
         //train perceptron
-        perceptron.train(trainingSet, learningFactor, trainingConstant, errorMax, maxIterations);
+        perceptron.train(trainingSet, learningFactor, errorMax, maxIterations);
 
 
 

@@ -1,4 +1,4 @@
-public class DataObject {
+class DataObject {
     double a,b,c,d;
     boolean isTraining;
     String type;
@@ -28,5 +28,13 @@ public class DataObject {
     void setDiscoveredType(String discoveredType) {
         if(!isTraining)
             this.discoveredType = discoveredType;
+    }
+
+    int getTypeAsInt(){
+        for (Object o : Main.values.keySet()) {
+            if(Main.values.get(o).equals(type))
+                return (int) o;
+        }
+        return -1;      //in case type not found in values HashMap
     }
 }
