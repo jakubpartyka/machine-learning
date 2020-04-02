@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Random;
 
 class Perceptron {
-    private double [] wageVector = new double[Main.NUMBER_OF_VARIABLES];
+    private double [] wageVector = new double[4];
     private double deviation;   //odchylenie
 
     Perceptron(double deviation) {
@@ -15,23 +15,15 @@ class Perceptron {
         //a method that generates new random wage vector
         Random random = new Random();
         for (int i = 0; i < wageVector.length ; i++) {
-            wageVector[i] = random.nextInt(9) + 1;
+            wageVector[i] = 1000;
         }
-    }
-
-    String getWageVector(){
-        StringBuilder output = new StringBuilder();
-        for (int i = 0; i<wageVector.length; i++) {
-            output.append(String.valueOf(i)).append(" ");
-        }
-        return output.toString();
     }
 
     void train(List<DataObject> trainingSet, double learningFactor, int errorMax, int maxIterations) {
         int iteration = 0;
         int errorCount = errorMax + 1;
 
-        while (errorCount >= errorMax && iteration < maxIterations){
+        while (errorCount >= errorMax && iteration++ < maxIterations){
 
             for (DataObject dataObject : trainingSet) {
                 //calculate perceptron's output value
@@ -43,7 +35,13 @@ class Perceptron {
                 applyDeltaRule(dataObject, learningFactor, y);
             }
 
-            iteration++;
+            //check error count
+            errorCount = 0;
+            for (DataObject dataObject : trainingSet) {
+                if(!dataObject.type.equals(dataObject.getDiscoveredType()))
+                    errorCount++;
+            }
+
         }
     }
 
@@ -70,15 +68,25 @@ class Perceptron {
             newDeviation = deviation - (learningFactor * (expectedType - calculatedType));
         }
 
-        System.out.println("zmieniono własności perceptronu: wektor: " + Arrays.toString(wageVector)
-                + "/" + Arrays.toString(newWageVector) + " deviation: " + deviation + "/" + newDeviation + " (stare/nowe)");
+        //prepare output message
+        StringBuilder message = new StringBuilder("zmieniono własności perceptronu: wektor: ");
+        for (double aWageVector : wageVector) {
+            message.append(round(aWageVector, 2)).append(", ");
+        }
+        message.append("/ ");
+        for (double aNewWageVector : newWageVector) {
+            message.append(round(aNewWageVector, 2)).append(", ");
+        }
+        message.append("\t\t\tdeviation: ").append(round(deviation,3)).append("/").append(round(newDeviation,3)).append(" (stare/nowe)");
+        System.out.println(message.toString());
+
 
         //update Perceptron's vector and deviation
         wageVector = newWageVector;
         deviation = newDeviation;
     }
 
-    private int calculateOutput(double[] inputVector){
+    int calculateOutput(double[] inputVector){
         //check if vectors match each other
         if(inputVector.length != wageVector.length){
             System.out.println("Zły wektor");
@@ -96,5 +104,14 @@ class Perceptron {
         if(net >= 0)
             return 1;
         return 0;
+    }
+
+    private static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
     }
 }

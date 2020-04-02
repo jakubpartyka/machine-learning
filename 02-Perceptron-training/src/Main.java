@@ -16,14 +16,13 @@ public class Main {
     }};
 
     //settings
-    static final int NUMBER_OF_VARIABLES = 4;
     private static final String trainingSetPath = "perceptron.data.csv";
     private static final String dataSetPath = "perceptron.test.data.csv";
     private static final boolean manualTrainingConstantSet = false;
 
     //perceptron settings
-    private static double   deviation           = 3;
-    private static double   learningFactor      = 0.3;
+    private static double   deviation           = 10;
+    private static double   learningFactor      = 0.5;
     private static int      errorMax            = 5;
     private static int      maxIterations       = 100;
 
@@ -53,8 +52,48 @@ public class Main {
         //train perceptron
         perceptron.train(trainingSet, learningFactor, errorMax, maxIterations);
 
+        System.out.println("\nresults:");
+        //analyze data set
+        int counter = 0;
+        for (DataObject dataObject : dataSet) {
+            int calculatedType = perceptron.calculateOutput(dataObject.dataAsVector());
+            int type = dataObject.getTypeAsInt();
 
+            if(type != calculatedType) {
+                System.out.println(values.get(type) + "\t\t" + values.get(calculatedType));
+                counter++;
+            }
+        }
+        System.out.println("dokładność: " + (100 - counter * 100/dataSet.size()) + '%');
 
+        //manual vector input
+
+        while (true) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("\nczy chcesz podać właśny wektor? [y/n]");
+            String line = scanner.nextLine();
+
+            if (!line.equals("y")) {
+                System.out.println("siema");
+                System.exit(0);
+            }
+
+            double[] customVector = new double[4];
+            System.out.println("a: ");
+            customVector[0] = scanner.nextDouble();
+
+            System.out.println("b: ");
+            customVector[1] = scanner.nextDouble();
+
+            System.out.println("c: ");
+            customVector[2] = scanner.nextDouble();
+
+            System.out.println("d: ");
+            customVector[3] = scanner.nextDouble();
+
+            int result = perceptron.calculateOutput(customVector);
+            System.out.println("Wynik to: " + values.get(result));
+        }
 
     }
 
