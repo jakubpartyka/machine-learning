@@ -1,10 +1,10 @@
-public class dataObject {
+public class DataObject {
     double a,b,c,d;
-    boolean isTraining = false;
+    boolean isTraining;
     String type;
     private String discoveredType = null;
 
-    public dataObject(double a, double b, double c, double d, boolean isTraining, String type) {
+    public DataObject(double a, double b, double c, double d, boolean isTraining, String type) {
         this.a = a;
         this.b = b;
         this.c = c;
@@ -13,14 +13,19 @@ public class dataObject {
         this.type = type;
     }
 
-    public String getDiscoveredType() {
+    //a method that returns data in a vector form
+    double[] dataAsVector(){
+        return new double[]{a,b,c,d};
+    }
+
+    String getDiscoveredType() {
         if(isTraining){
             return "this is a training object - no discovered type";
         }
         return discoveredType;
     }
 
-    public void setDiscoveredType(String discoveredType) {
+    void setDiscoveredType(String discoveredType) {
         if(!isTraining)
             this.discoveredType = discoveredType;
     }

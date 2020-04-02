@@ -3,20 +3,34 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class Main {
+    //TYPE BINARY VALUES
+    static HashMap values = new HashMap<Integer,String>(){{
+        put(0,"Iris-setosa");
+        put(1,"Iris-versicolor");
+    }};
+
     //settings
+    static final int NUMBER_OF_VARIABLES = 4;
     private static final String trainingSetPath = "perceptron.data.csv";
     private static final String dataSetPath = "perceptron.test.data.csv";
     private static final boolean manualTrainingConstantSet = false;
 
-    private static double trainingConstant = 0.5;
+    //perceptron settings
+    private static double   trainingConstant    = 0.5;
+    private static double   deviation           = 3;
+    private static double   learningFactor      = 0.3;
+    private static int      errorMax            = 5;
+    private static int      maxIterations       = 100;
 
     //lists
-    private static ArrayList<dataObject> trainingSet   = new ArrayList<>();
-    private static ArrayList<dataObject> dataSet       = new ArrayList<>();
+    private static ArrayList<DataObject> trainingSet   = new ArrayList<>();
+    private static ArrayList<DataObject> dataSet       = new ArrayList<>();
 
     public static void main(String[] args) {
         //loading data from .csv files
@@ -33,16 +47,16 @@ public class Main {
             }
         }
         System.out.println("training constant is: " + trainingConstant);
+
+        //create Perceptron
+        Perceptron perceptron = new Perceptron(deviation);
         
         //train perceptron
-        trainPerceptron();
+        perceptron.train(trainingSet, learningFactor, trainingConstant, errorMax, maxIterations);
 
 
 
 
-    }
-
-    private static void trainPerceptron() {
     }
 
     private static void loadTrainingSet() {
@@ -52,7 +66,7 @@ public class Main {
             while (line != null){
                 String [] data = line.split(",");
                 double a = Double.parseDouble(data[0]),b = Double.parseDouble(data[1]),c = Double.parseDouble(data[2]),d = Double.parseDouble(data[3]);
-                trainingSet.add(new dataObject(a,b,c,d,true,data[4]));
+                trainingSet.add(new DataObject(a,b,c,d,true,data[4]));
                 line = reader.readLine();
             }
 
@@ -72,7 +86,7 @@ public class Main {
             while (line != null){
                 String [] data = line.split(",");
                 double a = Double.parseDouble(data[0]),b = Double.parseDouble(data[1]),c = Double.parseDouble(data[2]),d = Double.parseDouble(data[3]);
-                dataSet.add(new dataObject(a,b,c,d,false,data[4]));
+                dataSet.add(new DataObject(a,b,c,d,false,data[4]));
                 line = reader.readLine();
             }
 
