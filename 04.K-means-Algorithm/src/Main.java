@@ -6,12 +6,20 @@ public class Main {
     private static File input = new File("iris.data");
 
     public static void main(String[] args) throws IOException {
-	    //k selection
+	    //set Centroid boud
+        Centroid.setBound(10);
+
+        //k selection
         System.out.println("enter K: ");
         k = new Scanner(System.in).nextInt();
 
         readInputFile();
 
+        int iterationsWithoutChange = 0;
+
+        while (iterationsWithoutChange < 2){
+
+        }
 
 
 
