@@ -1,39 +1,67 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-@SuppressWarnings("SameParameterValue")
+@SuppressWarnings("WeakerAccess")
 public class Centroid {
-    static List<Centroid> centroids = new ArrayList<>();
+    static int groupCounter = 1;
 
-    List<InputObject> assignedObjects = new ArrayList<>();
+    double a,b,c,d;
+    List<InputObject> objectsInGroup = new ArrayList<>();
+    int group;
 
-    private static int bound = -1;
-    int a,b,c,d;
+    Centroid() {
+        double bound = 3;
+        a = 7;
+        b = 5;
+        c = 6.5 + (1 * Math.random());
+        d = 4;
+        group = groupCounter++;
+    }
 
-    public Centroid() {
-        if(bound == -1) {
-            System.out.println("set correct centroid generation bound");
-            return;
+    static Centroid getClosestCentroid(InputObject object){
+        double shortestDistance = Double.MAX_VALUE;
+        Centroid dominant = null;
+
+        for (Centroid centroid : Main.centroids) {
+            double distance;
+            //calculate distance
+            distance = Math.sqrt(
+                    Math.pow((object.a - centroid.a),2) +
+                    Math.pow((object.b - centroid.b),2) +
+                    Math.pow((object.c - centroid.c),2) +
+                    Math.pow((object.d - centroid.d),2));
+
+            if(distance < shortestDistance){
+                shortestDistance = distance;
+                dominant = centroid;
+            }
         }
 
-        Random random = new Random();
-        a = random.nextInt(bound);
-        b = random.nextInt(bound);
-        c = random.nextInt(bound);
-        d = random.nextInt(bound);
-        centroids.add(this);
+        return dominant;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if(!obj.getClass().equals(this.getClass()))
-            return false;
-        Centroid otherCentroid = (Centroid) obj;
-        return (otherCentroid.a == this.a && otherCentroid.b == this.b && otherCentroid.c == this.c && otherCentroid.d == this.d);
-    }
 
-    static void setBound(int bound) {
-        Centroid.bound = bound;
+    public static void repositionCentroids() {
+        for (Centroid centroid : Main.centroids) {
+            if(centroid.objectsInGroup.size() < 1){
+                continue;
+            }
+
+            int count = centroid.objectsInGroup.size();
+
+            double sumA = 0, sumB = 0, sumC = 0, sumD = 0;
+
+            for (InputObject object : centroid.objectsInGroup) {
+                sumA += object.a;
+                sumB += object.b;
+                sumC += object.c;
+                sumD += object.d;
+            }
+
+            centroid.a = sumA / count;
+            centroid.b = sumB / count;
+            centroid.c = sumC / count;
+            centroid.d = sumD / count;
+        }
     }
 }
