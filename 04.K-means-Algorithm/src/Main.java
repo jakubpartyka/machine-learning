@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -17,8 +18,11 @@ public class Main {
 
         int iterationsWithoutChange = 0;
 
+        List<InputObject> data = InputObject.data;
         while (iterationsWithoutChange < 2){
-
+            for (InputObject dataObject : data) {
+                dataObject.findClosestCentroid();
+            }
         }
 
 

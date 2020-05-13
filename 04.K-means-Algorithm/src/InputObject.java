@@ -16,14 +16,20 @@ class InputObject {
 
     void findClosestCentroid(){
         //assign first centroid at the beginning
-        double shortestDistace = calculateDistanceFromCentroid(Centroid.centroids.get(0));
+        double shortestDistance = calculateDistanceFromCentroid(Centroid.centroids.get(0));
         assignedCentroid = Centroid.centroids.get(0);
+        assignedCentroid.assignedObjects.add(this);
 
         for (Centroid centroid : Centroid.centroids) {
             double newDistance = calculateDistanceFromCentroid(centroid);
-            if(newDistance < shortestDistace){
-                shortestDistace = newDistance;
+            if(newDistance < shortestDistance){
+                //remove from old centroid
+                assignedCentroid.assignedObjects.remove(this);
+
+                //set according to new centroid
+                shortestDistance = newDistance;
                 assignedCentroid = centroid;
+                assignedCentroid.assignedObjects.add(this);
             }
         }
     }
