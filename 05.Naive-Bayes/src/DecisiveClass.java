@@ -3,13 +3,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.HashMap;
 
-public class DecisiveClass {
-    private HashMap<String,Double> classProbability = new HashMap<>();
+class DecisiveClass {
+    static HashMap<String,Double> classProbability = new HashMap<>();
     private HashMap<String,Double> occurrencesCount = new HashMap<>();
-    private int occurrenceSum;
+    private int rowCount;
     private final static File training = new File("car.data");
 
-    void countOccurences() throws Exception{
+    void countOccurrences() throws Exception{
         BufferedReader reader = new BufferedReader(new FileReader(training));
         String line = reader.readLine();
         while (line != null){
@@ -19,13 +19,13 @@ public class DecisiveClass {
             //add to occurrences and increment sum
             if (!occurrencesCount.containsKey(key)) occurrencesCount.put(key,1.0);
             else occurrencesCount.put(key, occurrencesCount.get(key) + 1.0);
-            occurrenceSum += 1;
+            rowCount += 1;
 
             //read next line
             line = reader.readLine();
 
             for (String cls : occurrencesCount.keySet())
-                classProbability.put(cls,(occurrencesCount.get(cls)/ occurrenceSum));
+                classProbability.put(cls,(occurrencesCount.get(cls)/ rowCount));
         }
         double check = 0;
         System.out.println("CLASS PROBABILITY: ");
@@ -35,6 +35,9 @@ public class DecisiveClass {
         }
         if(check == 1.0) System.out.println("class probability read OK");
         else System.out.println("class probability read FAIL");
+    }
 
+    public HashMap<String, Double> getOccurrencesCount() {
+        return occurrencesCount;
     }
 }
