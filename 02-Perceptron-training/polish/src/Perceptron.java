@@ -103,7 +103,7 @@ class Perceptron {
 
         if(net >= 0)
             return 1;
-        return 0;
+        return 0;           //czy perceptron sie aktywowal
     }
 
     private static double round(double value, int places) {

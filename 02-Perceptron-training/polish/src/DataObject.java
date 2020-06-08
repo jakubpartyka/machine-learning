@@ -1,10 +1,10 @@
 class DataObject {
-    double a,b,c,d;
+    private double a,b,c,d;
     boolean isTraining;
     String type;
     private String discoveredType = null;
 
-    public DataObject(double a, double b, double c, double d, boolean isTraining, String type) {
+    DataObject(double a, double b, double c, double d, boolean isTraining, String type) {
         this.a = a;
         this.b = b;
         this.c = c;

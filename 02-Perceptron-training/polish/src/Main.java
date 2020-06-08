@@ -16,8 +16,8 @@ public class Main {
     }};
 
     //settings
-    private static final String trainingSetPath = "perceptron.data.csv";
-    private static final String dataSetPath = "perceptron.test.data.csv";
+    private static final String trainingSetPath = "/Users/admin/Desktop/git/machine-learning/02-Perceptron-training/polish/perceptron.data.csv";
+    private static final String dataSetPath = "/Users/admin/Desktop/git/machine-learning/02-Perceptron-training/polish/perceptron.test.data.csv";
     private static final boolean manualTrainingConstantSet = false;
 
     //perceptron settings
